@@ -14,6 +14,7 @@
     e.preventDefault();
     var pw = document.getElementById("password").value.trim();
     if (pw === ADMIN_PASSWORD) {
+      try { sessionStorage.setItem("philip_admin", "1"); } catch (e) {}
       document.getElementById("lock-screen").classList.add("hidden");
       document.getElementById("panel").classList.remove("hidden");
       init();

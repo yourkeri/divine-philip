@@ -206,43 +206,41 @@
 
   /* ---------- Comments ---------- */
 
-  var COMMENTS_KEY = "philip_comments";
-  var COMMENT_PREFIX = "c-";
-
-  function philibLoadComments() {
-    try {
-      var arr = JSON.parse(window.localStorage.getItem(COMMENTS_KEY));
-      return Array.isArray(arr) ? arr : [];
-    } catch (e) {
-      return [];
-    }
-  }
-
-  function philibSaveComments(arr) {
-    try {
-      window.localStorage.setItem(COMMENTS_KEY, JSON.stringify(arr));
-    } catch (e) {
-      /* ignore */
-    }
-  }
-
   function initComments() {
     var list = document.getElementById("comment-list");
     var form = document.getElementById("comment-form");
     var note = document.getElementById("comment-note");
     if (!list || !form) return;
 
-    var comments = philibLoadComments();
-
-    // Give old comments (no id) an id and likes so they work with the new UI.
-    comments.forEach(function (c) {
-      if (!c.id) c.id = (COMMENT_PREFIX + Date.now() + "-" + Math.floor(Math.random() * 1e6));
-      if (typeof c.likes !== "number") c.likes = 0;
-      if (!Array.isArray(c.replies)) c.replies = [];
-    });
-
+    var comments = [];
     var myLiked = {};
     try { myLiked = JSON.parse(window.localStorage.getItem("philip_comment_likes")) || {}; } catch (e) { myLiked = {}; }
+    var isAdmin = false;
+    try { isAdmin = window.sessionStorage.getItem("philip_admin") === "1"; } catch (e) { isAdmin = false; }
+
+    // Central store: comments now live on the server (Netlify Blobs) so they
+    // are shared publicly by every visitor, not just saved in one browser.
+    function api(action, payload) {
+      return fetch("/.netlify/functions/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.assign({ action: action }, payload || {}))
+      }).then(function (r) { return r.json(); });
+    }
+
+    function loadFromServer() {
+      fetch("/.netlify/functions/comments")
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          comments = (data && Array.isArray(data.comments)) ? data.comments : [];
+          comments.forEach(function (c) {
+            if (typeof c.likes !== "number") c.likes = 0;
+            if (!Array.isArray(c.replies)) c.replies = [];
+          });
+          render();
+        })
+        .catch(function () { render(); });
+    }
 
     function $esc(s) {
       if (typeof s !== "string") return "";
@@ -313,6 +311,7 @@
           '<div class="flex items-center gap-4 mt-1">' +
           likeBtn(c, false) + replyBtn(c) +
           '<button type="button" data-edit="' + c.id + '" class="comment-action text-sm font-medium text-gray-500 hover:text-brand-dark transition-colors">Edit</button>' +
+          (isAdmin ? '<button type="button" data-delete="' + c.id + '" class="comment-action text-sm font-medium text-red-500 hover:text-red-700 transition-colors">Delete</button>' : "") +
           "</div>" +
           renderReplies(c.replies) +
           "</div>"
@@ -323,7 +322,7 @@
     }
 
     function attachEvents() {
-      var els = list.querySelectorAll("[data-like], [data-edit], [data-reply]");
+      var els = list.querySelectorAll("[data-like], [data-edit], [data-reply], [data-delete]");
       els.forEach(function (btn) {
         btn.addEventListener("click", function () { handleAction(btn); });
       });
@@ -332,14 +331,25 @@
     function handleAction(btn) {
       if (btn.hasAttribute("data-like")) {
         var id = btn.getAttribute("data-like");
-        var target = findComment(id);
         // Toggle like
         myLiked[id] = !myLiked[id];
-        target.likes = (target.likes || 0) + (myLiked[id] ? 1 : -1);
-        if (target.likes < 0) target.likes = 0;
         try { window.localStorage.setItem("philip_comment_likes", JSON.stringify(myLiked)); } catch (e) {}
-        philibSaveComments(comments);
-        render();
+        api("like", { id: id, liked: myLiked[id] }).then(function (data) {
+          if (data && Array.isArray(data.comments)) {
+            comments = data.comments;
+            render();
+          }
+        }).catch(function () { render(); });
+      } else if (btn.hasAttribute("data-delete")) {
+        if (!isAdmin) return;
+        var delId = btn.getAttribute("data-delete");
+        if (!window.confirm("Delete this comment?")) return;
+        api("delete", { id: delId }).then(function (data) {
+          if (data && Array.isArray(data.comments)) {
+            comments = data.comments;
+            render();
+          }
+        }).catch(function () { render(); });
       } else if (btn.hasAttribute("data-edit")) {
         editComment(btn.getAttribute("data-edit"));
       } else if (btn.hasAttribute("data-reply")) {
@@ -379,18 +389,18 @@
       save.addEventListener("click", function () {
         var val = textarea.value.trim();
         if (!val) return;
-        target.text = val;
-        target.edited = true;
-        philibSaveComments(comments);
-        render();
+        api("edit", { id: id, text: val }).then(function (data) {
+          if (data && Array.isArray(data.comments)) {
+            comments = data.comments;
+            render();
+          }
+        }).catch(function () { render(); });
       });
       textarea.after(save);
       textarea.focus();
     }
 
     function startReply(id) {
-      var totalReplies = 0;
-      comments.forEach(function (c) { if (c.replies) totalReplies += c.replies.length; });
       var card = list.querySelector('[data-comment="' + id + '"]');
       if (!card) return;
       // Remove any existing reply box
@@ -409,16 +419,16 @@
         var text = box.querySelector(".reply-text").value.trim();
         if (!name || !text) return;
         var target = findComment(id);
-        if (!target.replies) target.replies = [];
-        target.replies.push({
-          id: (COMMENT_PREFIX + Date.now() + "-r" + (totalReplies)),
-          name: name,
-          text: text,
-          date: new Date().toLocaleString(undefined, { year: "numeric", month: "short", day: "numeric" }),
-          likes: 0
-        });
-        philibSaveComments(comments);
-        render();
+        var replyToId = id;
+        if (target && target.replies && box.getAttribute("data-replydepth") === "reply") {
+          replyToId = id;
+        }
+        api("add", { name: name, text: text, replyTo: replyToId }).then(function (data) {
+          if (data && Array.isArray(data.comments)) {
+            comments = data.comments;
+            render();
+          }
+        }).catch(function () { render(); });
       });
       box.querySelector(".reply-name").focus();
     }
@@ -430,21 +440,23 @@
       var name = form.querySelector("#comment-name").value.trim();
       var text = form.querySelector("#comment-text").value.trim();
       if (!name || !text) return;
-      comments.unshift({
-        id: (COMMENT_PREFIX + Date.now()),
-        name: name,
-        text: text,
-        date: new Date().toLocaleString(undefined, {
-          year: "numeric", month: "short", day: "numeric"
-        }),
-        likes: 0,
-        replies: []
+      var btn = form.querySelector("[type=submit]");
+      if (btn) { btn.disabled = true; }
+      api("add", { name: name, text: text }).then(function (data) {
+        if (data && Array.isArray(data.comments)) {
+          comments = data.comments;
+          render();
+        }
+        form.reset();
+        if (note) note.textContent = "Thanks! Your comment has been posted.";
+      }).catch(function () {
+        if (note) note.textContent = "Sorry, something went wrong. Please try again.";
+      }).finally(function () {
+        if (btn) { btn.disabled = false; }
       });
-      philibSaveComments(comments);
-      render();
-      form.reset();
-      if (note) note.textContent = "Thanks! Your comment has been posted.";
     });
+
+    loadFromServer();
   }
 
   /* ---------- Live shows ---------- */
