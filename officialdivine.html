@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Philip — Musician</title>
+
+  <meta name="description" content="Hi, I'm Divine Philip — a musician. Stream my music, learn about me, and get in touch."/>
+  <meta name="theme-color" content="#fafafa"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: "#15803d",  // friendly green
+              dark: "#166534",
+              light: "#dcfce7"
+            }
+          },
+          fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-[#fafafa] text-gray-800 font-sans antialiased">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-gray-200">
+    <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-3">
+        <img id="header-photo" alt="Philip" class="w-9 h-9 rounded-full object-cover shadow-sm"/>
+        <span class="text-lg font-extrabold text-gray-900">Philip<span class="text-brand-dark">.</span></span>
+      </a>
+      <nav class="flex items-center gap-2 sm:gap-6 text-xs sm:text-sm font-medium text-gray-600">
+        <a href="#music" class="hover:text-brand-dark transition-colors px-1.5 py-2">Music</a>
+        <a href="#shows" class="hover:text-brand-dark transition-colors px-1.5 py-2">Shows</a>
+        <a href="#about" class="hover:text-brand-dark transition-colors px-1.5 py-2">About</a>
+        <a href="#comments" class="hover:text-brand-dark transition-colors px-1.5 py-2">Comments</a>
+        <a href="#contact" class="px-3 sm:px-4 py-2 rounded-full bg-brand text-white hover:bg-brand-dark transition-colors whitespace-nowrap">Get in touch</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="reveal relative overflow-hidden">
+    <div id="hero-bg" class="absolute inset-0 bg-cover bg-center pointer-events-none"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-white/90 via-white/80 to-white pointer-events-none"></div>
+    <div class="relative max-w-4xl mx-auto px-4 pt-14 sm:pt-20 pb-14">
+      <div class="flex flex-col md:flex-row items-center gap-10">
+        <div class="flex-1 text-center md:text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-gray-200 shadow-sm text-brand-dark text-sm font-semibold mb-5">
+            <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+            Available for new projects
+          </div>
+          <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight">
+            Hi, I'm <span class="text-brand-dark">Divine Philip</span>.
+          </h1>
+          <p class="mt-2 text-xl sm:text-2xl font-semibold text-gray-700">Musician &amp; Songwriter</p>
+          <p class="mt-4 text-lg text-gray-600 max-w-md mx-auto md:mx-0">
+            I write and perform original songs — making music with real feeling. Join me for the ride.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3 justify-center md:justify-start">
+            <a href="#music" class="px-7 py-3.5 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark transition-colors shadow-sm">Listen to my music</a>
+            <a href="#contact" class="px-7 py-3.5 rounded-full border border-gray-300 bg-white text-gray-700 font-semibold hover:bg-gray-50 transition-colors">Get in touch</a>
+          </div>
+          <div class="mt-10 grid grid-cols-3 gap-6 max-w-sm mx-auto md:mx-0">
+            <div>
+              <p class="text-2xl font-extrabold text-gray-900">50+</p>
+              <p class="text-xs text-gray-500 font-medium mt-0.5">Songs written</p>
+            </div>
+            <div>
+              <p class="text-2xl font-extrabold text-gray-900">5+</p>
+              <p class="text-xs text-gray-500 font-medium mt-0.5">Years performing</p>
+            </div>
+            <div>
+              <p class="text-2xl font-extrabold text-gray-900">100%</p>
+              <p class="text-xs text-gray-500 font-medium mt-0.5">Happy artists</p>
+            </div>
+          </div>
+        </div>
+        <div class="shrink-0 hidden sm:block">
+          <div class="p-2 bg-white rounded-full shadow-xl ring-1 ring-gray-200">
+            <img id="hero-photo" alt="Philip" class="w-44 h-44 sm:w-52 sm:h-52 object-cover rounded-full"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Music / Portfolio -->
+  <section id="music" class="reveal scroll-mt-20 bg-white border-y border-gray-200">
+    <div class="max-w-4xl mx-auto px-4 py-14">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Selected Work</h2>
+          <p class="mt-2 text-gray-600">Have a listen. If you like what you hear, we can work together.</p>
+        </div>
+        <a href="#contact" class="hidden sm:inline-flex px-5 py-2.5 rounded-full border border-gray-300 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-colors whitespace-nowrap">
+          Commission a song
+        </a>
+      </div>
+
+      <div class="mt-8 max-w-2xl mx-auto space-y-3">
+        <!-- Portfolio cards (rendered from data) -->
+        <div id="music-list" class="space-y-3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Shows -->
+  <section id="shows" class="reveal scroll-mt-20">
+    <div class="max-w-3xl mx-auto px-4 py-14">
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Upcoming Shows</h2>
+      <p class="mt-2 text-gray-600">Come see me live. Here's where I'll be next.</p>
+
+      <div id="shows-list" class="mt-8 space-y-4"></div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="reveal scroll-mt-20">
+    <div class="max-w-3xl mx-auto px-4 py-14">
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900">A Little About Me</h2>
+      <div class="mt-6 flex flex-col sm:flex-row gap-6 items-start">
+        <img id="about-photo" alt="Philip, musician" class="w-28 h-28 rounded-full object-cover shadow-sm shrink-0"/>
+        <div class="text-gray-600 space-y-4">
+          <p id="about-text-1"></p>
+          <p id="about-text-2"></p>
+          <p class="flex flex-wrap gap-2" id="about-skills"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comments / Testimonials -->
+  <section id="comments" class="reveal scroll-mt-20">
+    <div class="max-w-3xl mx-auto px-4 py-14">
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900">What Customers Say</h2>
+      <p class="mt-2 text-gray-600">Worked with me before? Leave a comment and share your experience.</p>
+
+      <div id="comment-list" class="mt-8 space-y-3"></div>
+
+      <form id="comment-form" class="mt-10 space-y-5 bg-white border border-gray-200 rounded-2xl p-6">
+        <div>
+          <label for="comment-name" class="block text-sm font-medium text-gray-700 mb-1">Your name</label>
+          <input type="text" id="comment-name" name="comment-name" required
+                 class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition" placeholder="e.g. Sarah"/>
+        </div>
+        <div>
+          <label for="comment-text" class="block text-sm font-medium text-gray-700 mb-1">Your comment</label>
+          <textarea id="comment-text" name="comment-text" rows="3" required
+                    class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition resize-none" placeholder="Thanks Philip, the song came out great!"></textarea>
+          <span class="block mt-1 text-xs text-gray-400">Tip: type <span class="font-semibold">@name</span> to tag someone in a reply.</span>
+        </div>
+        <button type="submit"
+                class="px-6 py-3 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark transition-colors shadow-sm">
+          Post comment
+        </button>
+        <p id="comment-note" class="text-sm text-gray-500"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="reveal scroll-mt-20 bg-white border-t border-gray-200">
+    <div class="max-w-3xl mx-auto px-4 py-14">
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Get in Touch</h2>
+      <p class="mt-2 text-gray-600">Want to work together or book me? Send me a message and I'll get back to you.</p>
+
+      <!-- Newsletter -->
+      <div class="mt-8 bg-brand/5 border border-brand/15 rounded-2xl p-6 text-center">
+        <h3 class="text-lg font-bold text-gray-900">Never miss new music</h3>
+        <p class="mt-1 text-sm text-gray-600">Get early access to new songs and show announcements straight to your inbox.</p>
+        <form id="newsletter-form" class="mt-4 flex flex-col sm:flex-row gap-3 max-w-sm mx-auto">
+          <input type="email" id="newsletter-email" name="newsletter-email" required
+                 placeholder="you@example.com"
+                 class="flex-1 px-4 py-3 rounded-full border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition"/>
+          <button type="submit"
+                  class="px-6 py-3 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark transition-colors whitespace-nowrap">
+            Subscribe
+          </button>
+        </form>
+        <p id="newsletter-note" class="mt-3 text-sm text-gray-500"></p>
+      </div>
+
+      <div class="mt-8 flex flex-col sm:flex-row gap-4">
+        <a id="contact-whatsapp" href="#" target="_blank" rel="noopener"
+           class="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark transition-colors">
+          <span>Chat on WhatsApp</span>
+        </a>
+        <a id="contact-email" href="#"
+           class="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-full border border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors">
+          <span>Email me</span>
+        </a>
+      </div>
+
+      <!-- Follow on socials -->
+      <div class="mt-8">
+        <p class="text-center text-sm font-medium text-gray-600 mb-4">Follow me on social media</p>
+        <div id="contact-socials" class="flex justify-center gap-3"></div>
+      </div>
+
+      <!-- Simple form -->
+      <form id="contact-form" class="mt-10 space-y-5 max-w-lg mx-auto">
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Your name</label>
+          <input type="text" id="name" name="name" required
+                 class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition" placeholder="e.g. Sarah"/>
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your email</label>
+          <input type="email" id="email" name="email" required
+                 class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition" placeholder="you@example.com"/>
+        </div>
+        <div>
+          <label for="message" class="block text-sm font-medium text-gray-700 mb-1">What do you need?</label>
+          <textarea id="message" name="message" rows="4" required
+                    class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition resize-none" placeholder="Tell me a little about your project..."></textarea>
+        </div>
+        <button type="submit"
+                class="w-full px-6 py-3.5 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark transition-colors shadow-sm">
+          Send message
+        </button>
+        <p id="form-note" class="text-center text-sm text-gray-500"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-200">
+    <div class="max-w-4xl mx-auto px-4 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+      <span>© 2025 Philip. All rights reserved.</span>
+      <div class="flex gap-5" id="footer-socials"></div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/audio-store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

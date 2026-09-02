@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — Philip</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.css"/>
+</head>
+<body class="admin-body">
+
+  <!-- Password gate -->
+  <div id="lock-screen" class="lock-screen">
+    <div class="lock-card">
+      <h1>Admin</h1>
+      <p>Enter your password to manage the website.</p>
+      <form id="login-form">
+        <input type="password" id="password" placeholder="Password" autocomplete="current-password"/>
+        <button type="submit" class="btn-primary">Unlock</button>
+      </form>
+      <p id="login-error" class="error-text hidden">Incorrect password. Try again.</p>
+      <a href="officialdivine.html" class="back-link">← Back to website</a>
+    </div>
+  </div>
+
+  <!-- Admin panel -->
+  <div id="panel" class="panel hidden">
+    <header class="panel-header">
+      <div>
+        <h1>Website Admin</h1>
+        <p>Update your website info. Changes are saved to this browser.</p>
+      </div>
+      <div class="header-actions">
+        <a href="officialdivine.html" class="btn-secondary">View site</a>
+        <button id="btn-logout" class="btn-secondary">Log out</button>
+        <button id="btn-reset" class="btn-danger">Reset to defaults</button>
+      </div>
+    </header>
+
+    <form id="admin-form" class="form" novalidate>
+      <div id="required-banner" class="required-banner hidden">
+        <strong>Some needed items are missing.</strong>
+        <span></span>
+      </div>
+      <!-- Personal info -->
+      <section class="card">
+        <h2>Your info</h2>
+        <label>Hero background photo
+          <select data-source="bgPhoto" class="src-select">
+            <option value="url">Use a URL</option>
+            <option value="upload">Upload from device</option>
+          </select>
+          <input type="url" data-field="bgPhoto" class="src-url" placeholder="https://.../background.jpg"/>
+          <input type="file" data-file="bgPhoto" class="src-file hidden" accept="image/*"/>
+          <span class="photo-status" id="bg-photo-status"></span>
+        </label>
+        <label>Profile photo
+          <select data-source="photo" class="src-select">
+            <option value="url">Use a URL</option>
+            <option value="upload">Upload from device</option>
+          </select>
+          <input type="url" data-field="photo" class="src-url" placeholder="https://.../photo.jpg"/>
+          <input type="file" data-file="photo" class="src-file hidden" accept="image/*"/>
+          <span class="photo-status" id="photo-status"></span>
+        </label>
+        <div class="row">
+          <label data-field-label="whatsapp">WhatsApp number <span class="req">*</span>
+            <input type="text" data-field="whatsapp" data-required placeholder="1234567890"/>
+          </label>
+          <label data-field-label="email">Email <span class="req">*</span>
+            <input type="email" data-field="email" data-required placeholder="you@example.com"/>
+          </label>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section class="card">
+        <h2>About me</h2>
+        <label data-field-label="about1">Paragraph 1 <span class="req">*</span>
+          <textarea data-field="about1" data-required rows="3"></textarea>
+        </label>
+        <label data-field-label="about2">Paragraph 2 <span class="req">*</span>
+          <textarea data-field="about2" data-required rows="3"></textarea>
+        </label>
+        <label data-field-label="skills">Skills (comma separated) <span class="req">*</span>
+          <input data-field="skills" data-required placeholder="Singing, Songwriting, Performing live"/>
+        </label>
+      </section>
+
+<!-- Tracks -->
+      <section class="card">
+        <div class="card-head">
+          <h2>Music</h2>
+          <button type="button" id="btn-add-track" class="btn-secondary">+ Add song</button>
+        </div>
+        <div id="tracks-list"></div>
+      </section>
+
+      <!-- Shows -->
+      <section class="card">
+        <div class="card-head">
+          <h2>Upcoming shows</h2>
+          <button type="button" id="btn-add-show" class="btn-secondary">+ Add show</button>
+        </div>
+        <div id="shows-list"></div>
+      </section>
+
+      <!-- Socials -->
+      <section class="card">
+        <div class="card-head">
+          <h2>Social media</h2>
+        </div>
+        <div id="socials-list"></div>
+      </section>
+
+      <div class="sticky-save">
+        <button type="submit" class="btn-primary btn-lg">Save changes</button>
+        <p id="save-status" class="save-status"></p>
+      </div>
+    </form>
+  </div>
+
+  <!-- Crop modal -->
+  <div id="crop-modal" class="crop-modal hidden">
+    <div class="crop-dialog">
+      <h3>Crop photo</h3>
+      <p class="crop-hint">Drag to position, scroll to zoom in and out.</p>
+      <div class="crop-stage">
+        <img id="crop-image" alt="Photo to crop"/>
+      </div>
+      <div class="crop-zoom">
+        <button type="button" id="crop-zoom-out" class="btn-secondary" title="Zoom out">−</button>
+        <button type="button" id="crop-zoom-in" class="btn-secondary" title="Zoom in">+</button>
+      </div>
+      <div class="crop-actions">
+        <button type="button" id="crop-cancel" class="btn-secondary">Cancel</button>
+        <button type="button" id="crop-apply" class="btn-primary">Apply crop</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/audio-store.js"></script>
+  <script src="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
