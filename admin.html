@@ -68,6 +68,17 @@
           <input type="file" data-file="photo" class="src-file hidden" accept="image/*"/>
           <span class="photo-status" id="photo-status"></span>
         </label>
+
+        <!-- About section photo -->
+        <label>About section photo
+          <select data-source="aboutPhoto" class="src-select">
+            <option value="url">Use a URL</option>
+            <option value="upload">Upload from device</option>
+          </select>
+          <input type="url" data-field="aboutPhoto" class="src-url" placeholder="https://.../photo.jpg"/>
+          <input type="file" data-file="aboutPhoto" class="src-file hidden" accept="image/*"/>
+          <span class="photo-status" id="about-photo-status"></span>
+        </label>
         <div class="row">
           <label data-field-label="whatsapp">WhatsApp number <span class="req">*</span>
             <input type="text" data-field="whatsapp" data-required placeholder="1234567890"/>

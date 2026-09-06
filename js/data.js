@@ -14,6 +14,8 @@ var PHILIP_DEFAULTS = {
 
   bgPhoto: "",
 
+  aboutPhoto: "",
+
   about1:
     "I'm a musician and songwriter. I've been writing and performing music for a few years and love sharing original songs with new listeners — whether it's a heartfelt ballad, a joyful pop jam, or just a moment of inspiration.",
   about2:

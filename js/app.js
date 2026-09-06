@@ -121,17 +121,30 @@
     var headerPhoto = document.getElementById("header-photo");
     var heroPhoto = document.getElementById("hero-photo");
 
-    // Use an uploaded profile photo if one exists, else the photo URL.
-    function applyPhoto(src) {
-      if (photo) photo.src = src;
+    // Hero/header use the main profile photo.
+    function applyHeroPhoto(src) {
       if (headerPhoto) headerPhoto.src = src;
       if (heroPhoto) heroPhoto.src = src;
     }
     if (D.photo) {
-      applyPhoto(D.photo);
+      applyHeroPhoto(D.photo);
     }
     philibGetImageBlob("profile-photo", function (err, blob) {
-      if (!err && blob) applyPhoto(URL.createObjectURL(blob));
+      if (!err && blob) applyHeroPhoto(URL.createObjectURL(blob));
+    });
+
+    // The About photo is its own image: an uploaded one wins, then a URL,
+    // then it falls back to the same main profile photo.
+    function applyAboutPhoto(src) {
+      if (photo) photo.src = src;
+    }
+    if (D.aboutPhoto) {
+      applyAboutPhoto(D.aboutPhoto);
+    } else if (D.photo) {
+      applyAboutPhoto(D.photo);
+    }
+    philibGetImageBlob("about-photo", function (err, blob) {
+      if (!err && blob) applyAboutPhoto(URL.createObjectURL(blob));
     });
     var t1 = document.getElementById("about-text-1");
     if (t1) t1.textContent = D.about1;

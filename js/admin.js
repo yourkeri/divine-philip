@@ -140,19 +140,23 @@
     var d = window.PHILIP;
 
     var photo = document.querySelector('[data-field="photo"]');
+    var aboutPhoto = document.querySelector('[data-field="aboutPhoto"]');
     var bgPhoto = document.querySelector('[data-field="bgPhoto"]');
     var whatsapp = document.querySelector('[data-field="whatsapp"]');
     var email = document.querySelector('[data-field="email"]');
     photo.value = d.photo || "";
+    if (aboutPhoto) aboutPhoto.value = d.aboutPhoto || "";
     if (bgPhoto) bgPhoto.value = d.bgPhoto || "";
     whatsapp.value = d.whatsapp || "";
     email.value = d.email || "";
 
-    ["photo", "bgPhoto"].forEach(function (key) {
-      var status = document.getElementById(key === "photo" ? "photo-status" : "bg-photo-status");
+    ["photo", "bgPhoto", "aboutPhoto"].forEach(function (key) {
+      var statusId = key === "photo" ? "photo-status" : (key === "bgPhoto" ? "bg-photo-status" : "about-photo-status");
+      var status = document.getElementById(statusId);
       var file = document.querySelector('[data-file="' + key + '"]');
       if (file) file.value = "";
-      philibGetImageBlob(key === "photo" ? "profile-photo" : "hero-bg", function (err, blob) {
+      var storeKey = key === "photo" ? "profile-photo" : (key === "bgPhoto" ? "hero-bg" : "about-photo");
+      philibGetImageBlob(storeKey, function (err, blob) {
         if (status) {
           status.textContent = !err && blob && !(document.querySelector('[data-field="' + key + '"]').value)
             ? "An uploaded image is currently being used."
@@ -204,9 +208,11 @@
 
   var PHOTO_KEY = "profile-photo";
   var HERO_BG_KEY = "hero-bg";
+  var ABOUT_PHOTO_KEY = "about-photo";
 
   function save() {
     var photo = document.querySelector('[data-field="photo"]').value.trim();
+    var aboutPhoto = document.querySelector('[data-field="aboutPhoto"]') ? document.querySelector('[data-field="aboutPhoto"]').value.trim() : "";
     var bgPhoto = document.querySelector('[data-field="bgPhoto"]').value.trim();
     var whatsapp = document.querySelector('[data-field="whatsapp"]').value.trim();
     var email = document.querySelector('[data-field="email"]').value.trim();
@@ -270,9 +276,15 @@
     var bgPhotoUpload = bgPhotoFile && bgPhotoFile.files && bgPhotoFile.files[0] ? bgPhotoFile.files[0] : null;
     if (bgPhotoUpload) bgPhoto = "";
 
+    // About section photo: same rule.
+    var aboutPhotoFile = document.querySelector('[data-file="aboutPhoto"]');
+    var aboutPhotoUpload = aboutPhotoFile && aboutPhotoFile.files && aboutPhotoFile.files[0] ? aboutPhotoFile.files[0] : null;
+    if (aboutPhotoUpload) aboutPhoto = "";
+
     var data = {
       version: 3,
       photo: photo,
+      aboutPhoto: aboutPhoto,
       bgPhoto: bgPhoto,
       whatsapp: whatsapp,
       email: email,
@@ -309,6 +321,12 @@
       ops.push({ type: "delBgPhoto" });
     }
 
+    if (aboutPhotoUpload) {
+      ops.push({ type: "aboutPhoto", blob: aboutPhotoUpload });
+    } else if (aboutPhoto) {
+      ops.push({ type: "delAboutPhoto" });
+    }
+
     var done = 0;
     var total = ops.length;
     var anyMediaFail = false;
@@ -329,11 +347,16 @@
       } else if (op.type === "photo") {
         if (op.blob.size > 10 * 1024 * 1024) { anyMediaFail = true; finish(); return; }
         philibSaveImage(PHOTO_KEY, op.blob, function (err) { if (err) anyMediaFail = true; finish(); });
+      } else if (op.type === "aboutPhoto") {
+        if (op.blob.size > 10 * 1024 * 1024) { anyMediaFail = true; finish(); return; }
+        philibSaveImage(ABOUT_PHOTO_KEY, op.blob, function (err) { if (err) anyMediaFail = true; finish(); });
       } else if (op.type === "bgPhoto") {
         if (op.blob.size > 10 * 1024 * 1024) { anyMediaFail = true; finish(); return; }
         philibSaveImage(HERO_BG_KEY, op.blob, function (err) { if (err) anyMediaFail = true; finish(); });
       } else if (op.type === "delBgPhoto") {
         philibDeleteImage(HERO_BG_KEY, function () { finish(); });
+      } else if (op.type === "delAboutPhoto") {
+        philibDeleteImage(ABOUT_PHOTO_KEY, function () { finish(); });
       } else if (op.type === "delPhoto") {
         philibDeleteImage(PHOTO_KEY, function () { finish(); });
       } else {
